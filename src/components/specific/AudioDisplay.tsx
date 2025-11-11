@@ -14,7 +14,7 @@ const AudioDisplay = ({ contents, loading }: BlobDisplayProps) => {
   return (
     <>
       <Skeleton active={true} loading={loading} title={false} paragraph={{ rows: 1 }} />
-      {!loading && <audio style={{ width: "100%" }} ref={audioRef} controls={true} />}
+      {!loading && <audio className="bfd--w-full" ref={audioRef} controls={true} />}
     </>
   );
 };

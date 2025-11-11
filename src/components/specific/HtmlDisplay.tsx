@@ -62,17 +62,7 @@ const HtmlDisplay = ({ contents, loading }: BlobDisplayProps) => {
       <iframe
         ref={iframeRef}
         sandbox="allow-downloads allow-scripts allow-top-navigation"
-        style={{
-          width: "90vw",
-          // Height of the iframe is 100% of the view height
-          // minus its border (2px)
-          // minus the padding of the parent modal (40px)
-          // minus the header of the modal (32px)
-          // minus a top and bottom outside margin set by the modal (50px top, matched bottom)
-          height: "calc(100vh - 2px - 40px - 32px - 100px)",
-          border: "1px solid #C6C6C6",
-          borderRadius: 3,
-        }}
+        className="bento-html-display__iframe"
       ></iframe>
     </Spin>
   );

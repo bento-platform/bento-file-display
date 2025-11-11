@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { Document, Page, pdfjs } from "react-pdf";
 import type { PDFDocumentProxy } from "pdfjs-dist";
@@ -18,18 +18,6 @@ const BASE_PDF_OPTIONS = {
 const SCALES = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0];
 const INITIAL_SCALE = 2;
 const MAX_SCALE = SCALES.length - 1;
-
-const styles: Record<string, CSSProperties> = {
-  container: {
-    width: "calc(90vw - 32px)",
-    minWidth: "660px",
-  },
-  header: {
-    position: "absolute",
-    right: 30,
-    top: -42,
-  },
-};
 
 type PdfDisplayProps = {
   uri: string;
@@ -87,8 +75,8 @@ const PdfDisplay = ({ uri, onLoad, onFail, authHeader }: PdfDisplayProps) => {
   }, [pdfPageCounts, uri, scale]);
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
+    <div className="bento-pdf-display">
+      <div className="bento-pdf-display__header">
         <Button.Group>
           <Button disabled={scale === 0} onClick={decreaseScale}>
             <MinusOutlined />

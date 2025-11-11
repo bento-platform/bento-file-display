@@ -1,8 +1,6 @@
-import { type CSSProperties, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Spin } from "antd";
 import type { BlobDisplayProps } from "@/types/blob";
-
-const VIDEO_STYLE: CSSProperties = { width: "100%" };
 
 const VideoDisplay = ({ contents, loading }: BlobDisplayProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -15,7 +13,7 @@ const VideoDisplay = ({ contents, loading }: BlobDisplayProps) => {
 
   return (
     <Spin spinning={loading}>
-      <video style={VIDEO_STYLE} ref={videoRef} controls={true} />
+      <video className="bfd--w-full" ref={videoRef} controls={true} />
     </Spin>
   );
 };

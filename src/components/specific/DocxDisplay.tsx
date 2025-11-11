@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import mammoth from "mammoth/mammoth.browser";
 import { Alert, Skeleton } from "antd";
 
@@ -11,13 +11,6 @@ const MAMMOTH_OPTIONS = {
       style: "max-width: 90%; height: auto; margin: 0.5em 5%;",
     })),
   ),
-};
-
-const styles: Record<string, CSSProperties> = {
-  container: {
-    maxWidth: 960, // Maximum width to roughly a nice page
-    overflowX: "auto",
-  },
 };
 
 const DocxDisplay = ({ contents, loading }: BlobDisplayProps) => {
@@ -55,7 +48,7 @@ const DocxDisplay = ({ contents, loading }: BlobDisplayProps) => {
     <>
       <Skeleton active={true} loading={waiting} />
       {error && <Alert showIcon={true} message="Parsing error" description={error} />}
-      <div style={styles.container} dangerouslySetInnerHTML={innerHTML} />
+      <div className="bento-docx-display__container" dangerouslySetInnerHTML={innerHTML} />
     </>
   );
 };

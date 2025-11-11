@@ -1,11 +1,6 @@
-import { type CSSProperties, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Spin } from "antd";
 import type { BlobDisplayProps } from "@/types/blob";
-
-const styles: Record<string, CSSProperties> = {
-  container: { width: "100%", position: "relative" },
-  img: { maxWidth: "100%", height: "auto", position: "relative", top: 0 },
-};
 
 interface ImageBlobDisplayProps extends BlobDisplayProps {
   alt: string;
@@ -20,16 +15,16 @@ const ImageBlobDisplay = ({ alt, contents, loading }: ImageBlobDisplayProps) => 
     }
   }, [imgRef, contents]);
 
-  const imgStyle = useMemo(() => ({ ...styles.img, opacity: loading ? 0 : 1 }), [loading]);
+  const imgOpacity = useMemo(() => ({ opacity: loading ? 0 : 1 }), [loading]);
 
   return (
-    <div style={styles.container}>
+    <div className="bento-image-blob-display bfd--w-full">
       {loading && (
         <Spin spinning={true}>
-          <div style={{ width: "100%", height: 200 }} />
+          <div className="bfd--w-full" style={{ height: 200 }} />
         </Spin>
       )}
-      <img alt={alt} ref={imgRef} style={imgStyle} />
+      <img alt={alt} ref={imgRef} className="bento-image-blob-display__img" style={imgOpacity} />
     </div>
   );
 };

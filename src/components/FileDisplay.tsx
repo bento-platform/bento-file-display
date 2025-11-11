@@ -24,6 +24,7 @@ import {
   AUDIO_FILE_EXTENSIONS,
   IMAGE_FILE_EXTENSIONS,
   VIDEO_FILE_EXTENSIONS,
+  CODE_STYLE,
 } from "@/constants";
 
 import type { BlobDisplayProps } from "@/types/blob";
@@ -103,7 +104,7 @@ const WrappedCodeDisplay = ({ contents, fileExt, loading }: WrappedCodeDisplayPr
         <SyntaxHighlighter
           language={LANGUAGE_HIGHLIGHTERS[fileExt]}
           style={a11yLight}
-          customStyle={{ fontSize: "12px" }}
+          customStyle={CODE_STYLE}
           showLineNumbers={true}
         >
           {code || ""}

@@ -12,23 +12,9 @@ import remarkGfm from "remark-gfm";
 import { type CheckboxOptionType, Radio, type RadioChangeEvent, Skeleton } from "antd";
 import { CodeOutlined, PicRightOutlined } from "@ant-design/icons";
 
-const REMARK_PLUGINS = [remarkGfm];
+import { CODE_STYLE } from "@/constants";
 
-const styles: Record<string, CSSProperties> = {
-  container: {
-    position: "relative",
-    maxWidth: 960,
-    overflowX: "auto",
-  },
-  header: {
-    position: "absolute",
-    right: 0,
-    top: 0,
-  },
-  code: {
-    fontSize: "12px",
-  },
-};
+const REMARK_PLUGINS = [remarkGfm];
 
 const DISPLAY_MODE_OPTIONS: CheckboxOptionType[] = [
   {
@@ -68,8 +54,8 @@ const MarkdownDisplay = ({ contents, loading }: MarkdownDisplayProps) => {
   );
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
+    <div className="bento-markdown-display">
+      <div className="bento-markdown-display__header">
         <Radio.Group disabled={loading} defaultValue="render" onChange={onModeChange} options={DISPLAY_MODE_OPTIONS} />
       </div>
       {loading ? (
@@ -80,7 +66,7 @@ const MarkdownDisplay = ({ contents, loading }: MarkdownDisplayProps) => {
             <ReactMarkdown remarkPlugins={REMARK_PLUGINS}>{contents ?? ""}</ReactMarkdown>
           </div>
           {displayMode === "code" ? (
-            <SyntaxHighlighter language="markdown" style={a11yLight} customStyle={styles.code} showLineNumbers={true}>
+            <SyntaxHighlighter language="markdown" style={a11yLight} customStyle={CODE_STYLE} showLineNumbers={true}>
               {contents ?? ""}
             </SyntaxHighlighter>
           ) : null}

@@ -2,6 +2,8 @@ import ReactJson from "react18-json-view";
 import type { Collapsed } from "react18-json-view/dist/types";
 import type { JSONType } from "@/types/json";
 
+import "react18-json-view/src/style.css";
+
 type JsonViewProps = {
   src: JSONType | JSONType[] | Record<string, JSONType>;
   collapsed?: Collapsed;

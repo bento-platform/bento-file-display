@@ -1,0 +1,56 @@
+.bfd--w-full {
+    width: 100%;
+}
+
+.bento-pdf-display {
+    width: calc(90vw - 32px);
+    min-width: 660px;
+}
+
+.bento-pdf-display__header {
+    position: absolute;
+    right: 30px;
+    top: -42px;
+}
+
+.bento-docx-display__container {
+    max-width: 960px; /* Maximum width to roughly a nice page */
+    overflow-x: auto;
+}
+
+.bento-html-display__iframe {
+    width: 90vw;
+    /*
+    Height of the iframe is 100% of the view height
+        minus its border (2px)
+        minus the padding of the parent modal (40px)
+        minus the header of the modal (32px)
+        minus a top and bottom outside margin set by the modal (50px top, matched bottom)
+     */
+
+    height: calc(100vh - 2px - 40px - 32px - 100px);
+    border: 1px solid #C6C6C6;
+    border-radius: 3px;
+}
+
+.bento-image-blob-display {
+    position: relative;
+}
+
+.bento-image-blob-display__img {
+    max-width: 100%;
+    height: auto;
+    position: relative;
+    top: 0;
+}
+
+.bento-markdown-display {
+    position: relative;
+    max-width: 960px;
+    overflow-x: auto;
+}
+.bento-markdown-display__header {
+    position: absolute;
+    right: 0;
+    top: 0;
+}

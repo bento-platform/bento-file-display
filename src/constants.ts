@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 export const LANGUAGE_HIGHLIGHTERS: Record<string, string> = {
   bash: "bash",
   js: "javascript",
@@ -48,3 +50,5 @@ export const VIEWABLE_FILE_EXTENSIONS = [
   // Code & text formats
   ...Object.keys(LANGUAGE_HIGHLIGHTERS),
 ];
+
+export const CODE_STYLE: CSSProperties = { fontSize: "12px" };
