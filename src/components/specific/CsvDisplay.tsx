@@ -55,7 +55,7 @@ const CsvDisplay = ({ contents, loading }: BlobDisplayProps) => {
                   resolve([
                     rows[0]
                       ? Object.entries(rows[0])
-                          .filter(([k, _]) => k !== SPREADSHEET_ROW_KEY_PROP)
+                          .filter((e) => e[0] !== SPREADSHEET_ROW_KEY_PROP)
                           .map((_, i) => ({ dataIndex: `col${i}` }))
                       : [DEFAULT_COLUMN],
                     rows,
