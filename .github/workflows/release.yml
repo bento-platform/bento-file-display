@@ -21,7 +21,7 @@ jobs:
           cp package-lock.json package/
           cp README.md package/
           cp LICENSE package/
-          tar -cvzf bento_file_display.tgz package
+          tar -cvzf bento-file-display.tgz package
       - name: Upload release artifacts
         uses: actions/github-script@v8
         with: # adapted from https://github.com/bento-platform/katsu/blob/develop/.github/workflows/release.yml
@@ -41,6 +41,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               release_id: release.data.id,
-              name: `bento_file_display-${tag}.tgz`,
-              data: await fs.readFileSync("./bento_file_display.tgz"),
+              name: `bento-file-display-${tag}.tgz`,
+              data: await fs.readFileSync("./bento-file-display.tgz"),
             });

@@ -1,14 +1,14 @@
 {
-  "name": "bento_file_display",
-  "version": "0.1.5",
+  "name": "bento-file-display",
+  "version": "0.2.0",
   "description": "TypeScript component for displaying files in Bento front-ends.",
-  "homepage": "https://github.com/bento-platform/bento_file_display#readme",
+  "homepage": "https://github.com/bento-platform/bento-file-display#readme",
   "bugs": {
-    "url": "https://github.com/bento-platform/bento_file_display/issues"
+    "url": "https://github.com/bento-platform/bento-file-display/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bento-platform/bento_file_display.git"
+    "url": "git+https://github.com/bento-platform/bento-file-display.git"
   },
   "license": "LGPL-3.0-only",
   "author": "David Lougheed <david.lougheed@mail.mcgill.ca>",
@@ -16,9 +16,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "npm run clean && npx tsc && npm run copy-files",
+    "build": "npm run clean && npx tsc && npm run fix-imports && npm run copy-files",
     "clean": "rm -rf ./dist",
     "copy-files": "cp ./src/*.css ./dist/",
+    "fix-imports": "npx ts-add-js-extension --dir=./dist",
     "lint": "npx eslint src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -33,8 +34,8 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "peerDependencies": {
-    "antd": "^5.28.1",
     "@ant-design/icons": "^5.4.0",
+    "antd": "^5.28.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
@@ -49,6 +50,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "globals": "^15.11.0",
     "prettier": "^3.3.3",
+    "ts-add-js-extension": "^1.6.6",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4"
   }
