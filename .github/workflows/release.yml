@@ -1,0 +1,35 @@
+on: release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install modules
+        run: npm install
+      - name: Run build script
+        run: npm run build
+      - name: Make release artifact
+        run: tar -cvzf bento_file_display.tgz ./dist/*
+      - name: Upload release artifacts
+        uses: actions/github-script@v8
+        with: # adapted from https://github.com/bento-platform/katsu/blob/develop/.github/workflows/release.yml
+          script: |
+            const fs = require("fs");
+
+            // get tag
+            const tag = context.ref.replace("refs/tags/", "");
+
+            // get release from tag
+            const release = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: tag,
+            });
+            await github.rest.repos.uploadReleaseAsset({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.data.id,
+              name: `bento_file_display-${tag}.tgz`,
+              data: await fs.readFileSync("./bento_file_display.tgz"),
+            });
