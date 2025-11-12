@@ -51,4 +51,12 @@ export const VIEWABLE_FILE_EXTENSIONS = [
   ...Object.keys(LANGUAGE_HIGHLIGHTERS),
 ];
 
+export const BROWSER_RENDERED_EXTENSIONS = [
+  ".pdf",
+  ".txt",
+  ...AUDIO_FILE_EXTENSIONS,
+  ...IMAGE_FILE_EXTENSIONS,
+  ...VIDEO_FILE_EXTENSIONS,
+];
+
 export const CODE_STYLE: CSSProperties = { fontSize: "12px" };
