@@ -1,6 +1,6 @@
 {
   "name": "bento_file_display",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "TypeScript component for displaying files in Bento front-ends.",
   "homepage": "https://github.com/bento-platform/bento_file_display#readme",
   "bugs": {
@@ -13,7 +13,7 @@
   "license": "LGPL-3.0-only",
   "author": "David Lougheed <david.lougheed@mail.mcgill.ca>",
   "type": "module",
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "build": "npm run clean && npx tsc && npm run copy-files",
     "clean": "rm -rf ./dist",
