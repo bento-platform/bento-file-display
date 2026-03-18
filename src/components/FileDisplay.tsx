@@ -198,7 +198,7 @@ const FileDisplay = ({ uri, fileName, loading, authHeader }: FileDisplayProps) =
 
         if (fileExt === "pdf") {
           // Non-text, content isn't loaded a priori
-          return <PdfDisplay uri={uri} onLoad={onPdfLoad} onFail={onPdfFail} />;
+          return <PdfDisplay authHeader={authHeader} uri={uri} onLoad={onPdfLoad} onFail={onPdfFail} />;
         } else if (fileExt === "docx") {
           return <DocxDisplay contents={fc} loading={loadingFileContents} />;
         } else if (CSV_LIKE_FILE_EXTENSIONS.includes(fileExt)) {
