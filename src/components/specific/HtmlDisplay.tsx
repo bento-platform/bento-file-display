@@ -28,6 +28,7 @@ const HtmlDisplay = ({ contents, loading }: BlobDisplayProps) => {
 
     if (!iframe) return;
     if (!contents) return;
+    if (loading) return;
 
     // hacky escape to avoid setting state directly in effect.
     (async () => {
@@ -52,7 +53,7 @@ const HtmlDisplay = ({ contents, loading }: BlobDisplayProps) => {
         })
         .finally(() => setIsConverting(false));
     })();
-  }, [contents]);
+  }, [contents, loading]);
 
   // Three different loading states:
   //  - loading bytes from server

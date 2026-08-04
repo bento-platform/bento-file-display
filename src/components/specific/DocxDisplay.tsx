@@ -19,6 +19,7 @@ const DocxDisplay = ({ contents, loading }: BlobDisplayProps) => {
   const [docHTML, setDocHTML] = useState<string | null>(null);
 
   useEffect(() => {
+    if (loading) return;
     if (!contents) return;
 
     (async () => {

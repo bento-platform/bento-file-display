@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { Alert, Skeleton, Spin } from "antd";
+import { ErrorBoundary, getErrorMessage } from "react-error-boundary";
 
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
@@ -190,43 +191,45 @@ const FileDisplay = ({ uri, fileName, loading, authHeader }: FileDisplayProps) =
 
   return (
     <Spin spinning={loading ?? false}>
-      {(() => {
-        if (fileLoadError) {
-          return (
-            <Alert
-              type="error"
-              message={`Error loading file: ${fileName}`}
-              description={fileLoadError}
-              showIcon={true}
-            />
-          );
-        }
+      <ErrorBoundary fallbackRender={({ error }) => <Alert type="error" description={getErrorMessage(error)} />}>
+        {(() => {
+          if (fileLoadError) {
+            return (
+              <Alert
+                type="error"
+                message={`Error loading file: ${fileName}`}
+                description={fileLoadError}
+                showIcon={true}
+              />
+            );
+          }
 
-        const fc = fileContents[uri]; // undefined for PDF or if not loaded yet
+          const fc = fileContents[uri]; // undefined for PDF or if not loaded yet
 
-        if (fileExt === "pdf") {
-          // Non-text, content isn't loaded a priori
-          return <PdfDisplay authHeader={authHeader} uri={uri} onLoad={onPdfLoad} onFail={onPdfFail} />;
-        } else if (fileExt === "docx") {
-          return <DocxDisplay contents={fc} loading={loadingFileContents} />;
-        } else if (CSV_LIKE_FILE_EXTENSIONS.includes(fileExt)) {
-          return <CsvDisplay contents={fc} loading={loadingFileContents} />;
-        } else if (["xls", "xlsx"].includes(fileExt)) {
-          return <XlsxDisplay contents={fc} loading={loadingFileContents} />;
-        } else if (AUDIO_FILE_EXTENSIONS.includes(fileExt)) {
-          return <AudioDisplay contents={fc} loading={loadingFileContents} />;
-        } else if (IMAGE_FILE_EXTENSIONS.includes(fileExt)) {
-          return <ImageBlobDisplay alt={fileName} contents={fc} loading={loadingFileContents} />;
-        } else if (VIDEO_FILE_EXTENSIONS.includes(fileExt)) {
-          return <VideoDisplay contents={fc} loading={loadingFileContents} />;
-        } else if (fileExt === "json") {
-          return <WrappedJsonDisplay contents={fc} loading={loadingFileContents} />;
-        } else if (["htm", "html"].includes(fileExt)) {
-          return <HtmlDisplay contents={fc} loading={loadingFileContents} />;
-        } else {
-          return <WrappedCodeDisplay contents={fc} fileExt={fileExt} loading={loadingFileContents} />;
-        }
-      })()}
+          if (fileExt === "pdf") {
+            // Non-text, content isn't loaded a priori
+            return <PdfDisplay authHeader={authHeader} uri={uri} onLoad={onPdfLoad} onFail={onPdfFail} />;
+          } else if (fileExt === "docx") {
+            return <DocxDisplay contents={fc} loading={loadingFileContents} />;
+          } else if (CSV_LIKE_FILE_EXTENSIONS.includes(fileExt)) {
+            return <CsvDisplay contents={fc} loading={loadingFileContents} />;
+          } else if (["xls", "xlsx"].includes(fileExt)) {
+            return <XlsxDisplay contents={fc} loading={loadingFileContents} />;
+          } else if (AUDIO_FILE_EXTENSIONS.includes(fileExt)) {
+            return <AudioDisplay contents={fc} loading={loadingFileContents} />;
+          } else if (IMAGE_FILE_EXTENSIONS.includes(fileExt)) {
+            return <ImageBlobDisplay alt={fileName} contents={fc} loading={loadingFileContents} />;
+          } else if (VIDEO_FILE_EXTENSIONS.includes(fileExt)) {
+            return <VideoDisplay contents={fc} loading={loadingFileContents} />;
+          } else if (fileExt === "json") {
+            return <WrappedJsonDisplay contents={fc} loading={loadingFileContents} />;
+          } else if (["htm", "html"].includes(fileExt)) {
+            return <HtmlDisplay contents={fc} loading={loadingFileContents} />;
+          } else {
+            return <WrappedCodeDisplay contents={fc} fileExt={fileExt} loading={loadingFileContents} />;
+          }
+        })()}
+      </ErrorBoundary>
     </Spin>
   );
 };
