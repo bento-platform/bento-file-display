@@ -19,7 +19,7 @@ const CsvDisplay = ({ contents, loading }: BlobDisplayProps) => {
   const [isParsing, setIsParsing] = useState(false);
   const [columns, setColumns] = useState<SpreadsheetTableProps<CsvRecord>["columns"]>([DEFAULT_COLUMN]);
 
-  if (contents && contents !== lastContents && !isParsing) {
+  if (contents && contents !== lastContents && !isParsing && !loading) {
     setIsParsing(true);
 
     contents

@@ -46,7 +46,7 @@ const XlsxDisplay = ({ contents, loading }: BlobDisplayProps) => {
     setSheetJSON(json.map((r, i) => ({ ...r, [SPREADSHEET_ROW_KEY_PROP]: `row${i}` })));
   }, []);
 
-  if (contents && contents !== lastContents && !reading) {
+  if (contents && contents !== lastContents && !reading && !loading) {
     setLastContents(contents);
     setReading(true);
     contents

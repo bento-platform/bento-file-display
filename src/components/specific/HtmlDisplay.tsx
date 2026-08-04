@@ -24,10 +24,11 @@ const HtmlDisplay = ({ contents, loading }: BlobDisplayProps) => {
   }, []);
 
   useEffect(() => {
-    const iframe = iframeRef.current;
-
-    if (!iframe) return;
+    if (loading) return;
     if (!contents) return;
+
+    const iframe = iframeRef.current;
+    if (!iframe) return;
 
     // hacky escape to avoid setting state directly in effect.
     (async () => {
@@ -52,7 +53,7 @@ const HtmlDisplay = ({ contents, loading }: BlobDisplayProps) => {
         })
         .finally(() => setIsConverting(false));
     })();
-  }, [contents]);
+  }, [contents, loading]);
 
   // Three different loading states:
   //  - loading bytes from server
