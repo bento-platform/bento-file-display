@@ -20,6 +20,7 @@
     "copy-files": "cp ./src/*.css ./dist/",
     "fix-imports": "npx ts-add-js-extension --dir=./dist",
     "lint": "npx eslint src",
+    "lint:fix": "npx eslint src --fix",
     "test": "npx webpack-dev-server"
   },
   "dependencies": {

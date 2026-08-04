@@ -193,7 +193,12 @@ const FileDisplay = ({ uri, fileName, loading, authHeader }: FileDisplayProps) =
       {(() => {
         if (fileLoadError) {
           return (
-            <Alert type="error" message={`Error loading file: ${fileName}`} description={fileLoadError} showIcon={true} />
+            <Alert
+              type="error"
+              message={`Error loading file: ${fileName}`}
+              description={fileLoadError}
+              showIcon={true}
+            />
           );
         }
 
