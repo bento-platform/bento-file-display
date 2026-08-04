@@ -37,6 +37,7 @@ export const VIEWABLE_FILE_EXTENSIONS = [
 
   // Documents
   "docx",
+  "htm",
   "html",
   "pdf",
 

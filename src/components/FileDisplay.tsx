@@ -221,7 +221,7 @@ const FileDisplay = ({ uri, fileName, loading, authHeader }: FileDisplayProps) =
           return <VideoDisplay contents={fc} loading={loadingFileContents} />;
         } else if (fileExt === "json") {
           return <WrappedJsonDisplay contents={fc} loading={loadingFileContents} />;
-        } else if (fileExt === "html") {
+        } else if (["htm", "html"].includes(fileExt)) {
           return <HtmlDisplay contents={fc} loading={loadingFileContents} />;
         } else {
           return <WrappedCodeDisplay contents={fc} fileExt={fileExt} loading={loadingFileContents} />;
