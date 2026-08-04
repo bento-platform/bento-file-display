@@ -14,3 +14,13 @@ Make sure to import the stylesheet as well:
 ```js
 import "bento-file-display/dist/style.css";
 ```
+
+## Testing
+
+To start the test application, run the following command:
+
+```bash
+npm run test
+```
+
+This will start a Webpack development server.
