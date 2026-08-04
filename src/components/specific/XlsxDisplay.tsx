@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { read, utils, type WorkBook } from "xlsx";
 import { Card } from "antd";
@@ -11,6 +11,8 @@ type XlsxData = XlsxRecord[];
 type XlsxColumns = SpreadsheetTableProps<XlsxRecord>["columns"];
 
 const XlsxDisplay = ({ contents, loading }: BlobDisplayProps) => {
+  const [lastContents, setLastContents] = useState<Blob | undefined>(undefined);
+
   const [excelFile, setExcelFile] = useState<WorkBook | null>(null);
   const [reading, setReading] = useState(false);
 
@@ -18,48 +20,47 @@ const XlsxDisplay = ({ contents, loading }: BlobDisplayProps) => {
   const [sheetColumns, setSheetColumns] = useState<XlsxColumns>([]);
   const [sheetJSON, setSheetJSON] = useState<XlsxData>([]);
 
-  useEffect(() => {
-    if (!contents) return;
+  const handleNewSheet = useCallback((ef: WorkBook | null, sheet: string) => {
+    if (!ef) return;
+
+    const json: object[] = utils.sheet_to_json(ef.Sheets[sheet]);
+    if (json.length === 0) return;
+
+    const columnSet = new Set();
+    const columns: XlsxColumns = [];
+
+    // explore first 30 rows to find all columns
+    json.slice(0, 30).forEach((row) => {
+      Object.keys(row).forEach((c) => {
+        if (columnSet.has(c)) return;
+        columnSet.add(c);
+        columns.push({
+          title: c.startsWith("__") ? "" : c,
+          dataIndex: c,
+        });
+      });
+    });
+
+    setSelectedSheet(sheet);
+    setSheetColumns(columns);
+    setSheetJSON(json.map((r, i) => ({ ...r, [SPREADSHEET_ROW_KEY_PROP]: `row${i}` })));
+  }, []);
+
+  if (contents && contents !== lastContents && !reading) {
+    setLastContents(contents);
     setReading(true);
     contents
       .arrayBuffer()
       .then((ab) => {
-        setExcelFile(read(ab));
+        const ef = read(ab);
+        setExcelFile(ef);
+        handleNewSheet(ef, ef.SheetNames[0]); // reset selected sheet to first sheet of newly-loaded file
       })
       .finally(() => setReading(false));
-  }, [contents]);
-
-  useEffect(() => {
-    if (!excelFile) return;
-
-    if (excelFile.SheetNames.length && selectedSheet === undefined) {
-      setSelectedSheet(excelFile.SheetNames[0]);
-    } else if (selectedSheet !== undefined) {
-      const json: object[] = utils.sheet_to_json(excelFile.Sheets[selectedSheet]);
-      if (json.length === 0) return;
-
-      const columnSet = new Set();
-      const columns: XlsxColumns = [];
-
-      // explore first 30 rows to find all columns
-      json.slice(0, 30).forEach((row) => {
-        Object.keys(row).forEach((c) => {
-          if (columnSet.has(c)) return;
-          columnSet.add(c);
-          columns.push({
-            title: c.startsWith("__") ? "" : c,
-            dataIndex: c,
-          });
-        });
-      });
-
-      setSheetColumns(columns);
-      setSheetJSON(json.map((r, i) => ({ ...r, [SPREADSHEET_ROW_KEY_PROP]: `row${i}` })));
-    }
-  }, [excelFile, selectedSheet]);
+  }
 
   const tabs = useMemo(() => (excelFile?.SheetNames ?? []).map((s) => ({ key: s, label: s })), [excelFile]);
-  const onTabChange = useCallback((s: string) => setSelectedSheet(s), []);
+  const onTabChange = useCallback((sheet: string) => handleNewSheet(excelFile, sheet), [excelFile, handleNewSheet]);
   const showHeader = useMemo(() => sheetColumns.reduce((acc, v) => acc || v.title !== "", false), [sheetColumns]);
 
   return (

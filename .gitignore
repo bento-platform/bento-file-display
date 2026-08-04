@@ -8,5 +8,8 @@ dist/
 .idea/
 .vscode/
 
-# Misc
-test*
+# Test artifacts
+test/dist
+
+# Office
+~$*

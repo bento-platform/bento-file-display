@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Collapse, Select, Typography } from "antd";
 
 import JsonView from "../JsonView";
@@ -16,10 +16,11 @@ type JsonArrayDisplayProps = {
 };
 
 const JsonArrayDisplay = ({ doc, standalone }: JsonArrayDisplayProps) => {
+  const [lastDoc, setLastDoc] = useState<JSONType[] | undefined>(undefined);
   const [jsonArrayGroups, setJsonArrayGroups] = useState<Record<string, JSONType[]> | null>(null);
   const [selectedJsonGroup, setSelectedJsonGroup] = useState<string | null>(null);
 
-  useEffect(() => {
+  if (doc !== lastDoc) {
     if (Array.isArray(doc) && doc.length > JSON_ARRAY_GROUP_SIZE) {
       // Array group selector options
       const arrayGroups: Record<string, JSONType[]> = {};
@@ -36,7 +37,8 @@ const JsonArrayDisplay = ({ doc, standalone }: JsonArrayDisplayProps) => {
       setJsonArrayGroups(null);
       setSelectedJsonGroup(null);
     }
-  }, [doc]);
+    setLastDoc(doc);
+  }
 
   const onJsonGroupSelect = useCallback((key: string) => {
     setSelectedJsonGroup(key);
