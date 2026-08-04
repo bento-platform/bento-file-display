@@ -21,7 +21,7 @@ export const LANGUAGE_HIGHLIGHTERS: Record<string, string> = {
 export const AUDIO_FILE_EXTENSIONS = ["3gp", "aac", "flac", "m4a", "mp3", "ogg", "wav"];
 export const CSV_LIKE_FILE_EXTENSIONS = ["csv", "tsv"];
 export const IMAGE_FILE_EXTENSIONS = ["apng", "avif", "bmp", "gif", "jpg", "jpeg", "png", "svg", "webp"];
-export const VIDEO_FILE_EXTENSIONS = ["mp4", "webm"];
+export const VIDEO_FILE_EXTENSIONS = ["mov", "mp4", "webm"];
 
 // TODO: ".bed",
 //  .bed files are basically TSVs, but they can have instructions and can be whitespace-delimited instead

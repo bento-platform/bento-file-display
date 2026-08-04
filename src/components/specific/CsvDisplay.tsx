@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Papa from "papaparse";
 import { Alert } from "antd";
 
@@ -13,14 +13,13 @@ type CsvData = CsvRecord[];
 type CsvParseResult = [SpreadsheetTableProps<CsvRecord>["columns"], CsvData];
 
 const CsvDisplay = ({ contents, loading }: BlobDisplayProps) => {
+  const [lastContents, setLastContents] = useState<Blob | undefined>(undefined);
   const [parsedData, setParsedData] = useState<CsvData>([]);
   const [parseError, setParseError] = useState("");
-  const [isParsing, setIsParsing] = useState(true); // Start in parsing state
+  const [isParsing, setIsParsing] = useState(false);
   const [columns, setColumns] = useState<SpreadsheetTableProps<CsvRecord>["columns"]>([DEFAULT_COLUMN]);
 
-  useEffect(() => {
-    if (!contents) return;
-
+  if (contents && contents !== lastContents && !isParsing) {
     setIsParsing(true);
 
     contents
@@ -72,8 +71,11 @@ const CsvDisplay = ({ contents, loading }: BlobDisplayProps) => {
       .catch((err) => {
         setParseError(err.toString());
       })
-      .finally(() => setIsParsing(false));
-  }, [contents]);
+      .finally(() => {
+        setLastContents(contents);
+        setIsParsing(false);
+      });
+  }
 
   if (parseError) {
     return <Alert message="Parsing error" description={parseError} type="error" showIcon={true} />;

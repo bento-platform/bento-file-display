@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Alert, Skeleton, Spin } from "antd";
 
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -55,18 +55,20 @@ SyntaxHighlighter.registerLanguage("xml", xml);
 const DEFER_LOADING_FILE_EXTENSIONS = ["pdf"]; // Don't use a fetch() for these extensions
 
 const WrappedJsonDisplay = ({ contents, loading }: BlobDisplayProps) => {
+  const [lastContents, setLastContents] = useState<Blob | undefined>(undefined);
   const [parsing, setParsing] = useState(false);
   const [json, setJson] = useState<JSONType | undefined>(undefined);
 
-  useEffect(() => {
-    if (contents) {
-      setParsing(true);
-      contents
-        .text()
-        .then((jt) => setJson(JSON.parse(jt)))
-        .finally(() => setParsing(false));
-    }
-  }, [contents]);
+  if (contents && contents !== lastContents && !parsing) {
+    setParsing(true);
+    contents
+      .text()
+      .then((jt) => setJson(JSON.parse(jt)))
+      .finally(() => {
+        setLastContents(contents);
+        setParsing(false);
+      });
+  }
 
   return (
     <>
@@ -81,18 +83,20 @@ interface WrappedCodeDisplayProps extends BlobDisplayProps {
 }
 
 const WrappedCodeDisplay = ({ contents, fileExt, loading }: WrappedCodeDisplayProps) => {
+  const [lastContents, setLastContents] = useState<Blob | undefined>(undefined);
   const [decoding, setDecoding] = useState(false);
   const [code, setCode] = useState("");
 
-  useEffect(() => {
-    if (contents) {
-      setDecoding(true);
-      contents
-        .text()
-        .then((mt) => setCode(mt))
-        .finally(() => setDecoding(false));
-    }
-  }, [contents, loading]);
+  if (contents && contents !== lastContents && !decoding) {
+    setDecoding(true);
+    contents
+      .text()
+      .then((mt) => setCode(mt))
+      .finally(() => {
+        setLastContents(contents);
+        setDecoding(false);
+      });
+  }
 
   if (fileExt === "md") {
     return <MarkdownDisplay contents={code} loading={loading || decoding} />;
@@ -121,50 +125,54 @@ type FileDisplayProps = {
 };
 
 const FileDisplay = ({ uri, fileName, loading, authHeader }: FileDisplayProps) => {
+  const [lastUri, setLastUri] = useState("");
+
   const [fileLoadError, setFileLoadError] = useState("");
   const [loadingFileContents, setLoadingFileContents] = useState(false);
   const [fileContents, setFileContents] = useState<Record<string, Blob>>({});
 
   const fileExt = fileName ? fileName.split(".").slice(-1)[0].toLowerCase() : "";
 
-  useEffect(() => {
-    // File changed, so reset the load error
+  if (!uri) {
+    console.error(`Files: something went wrong while trying to load ${uri}`);
+    setFileLoadError("Could not find URI for file.");
+  } else if (!fileName) {
+    console.error(`Files: something went wrong while trying to load ${uri}`);
+    setFileLoadError("Could not find file name for file.");
+  } else if (uri && uri !== lastUri && !loadingFileContents) {
+    // Initial render or file URI changed, so load the file contents if needed
+
     setFileLoadError("");
+    setLastUri(uri);
 
-    (async () => {
-      if (!fileName) return;
+    if (!(uri in fileContents)) {
+      // Don't already have file contents cached, do a fetch.
 
-      if (fileExt === "pdf") {
-        setLoadingFileContents(true);
+      setLoadingFileContents(true);
+
+      // If file extension is in DEFER_LOADING_FILE_EXTENSIONS, then loading/resetting load state is external.
+      if (!DEFER_LOADING_FILE_EXTENSIONS.includes(fileExt)) {
+        (async () => {
+          try {
+            const r = await fetch(uri, { headers: authHeader });
+            if (r.ok) {
+              setFileContents({
+                ...fileContents,
+                [uri]: await r.blob(),
+              });
+            } else {
+              setFileLoadError(`Could not load file: ${await r.text()}`);
+            }
+          } catch (e) {
+            console.error(e);
+            setFileLoadError(`Could not load file: ${(e as Error).message}`);
+          } finally {
+            setLoadingFileContents(false);
+          }
+        })();
       }
-
-      if (DEFER_LOADING_FILE_EXTENSIONS.includes(fileExt) || (uri && uri in fileContents)) return;
-
-      if (!uri) {
-        console.error(`Files: something went wrong while trying to load ${uri}`);
-        setFileLoadError("Could not find URI for file.");
-        return;
-      }
-
-      try {
-        setLoadingFileContents(true);
-        const r = await fetch(uri, { headers: authHeader });
-        if (r.ok) {
-          setFileContents({
-            ...fileContents,
-            [uri]: await r.blob(),
-          });
-        } else {
-          setFileLoadError(`Could not load file: ${await r.text()}`);
-        }
-      } catch (e) {
-        console.error(e);
-        setFileLoadError(`Could not load file: ${(e as Error).message}`);
-      } finally {
-        setLoadingFileContents(false);
-      }
-    })();
-  }, [fileName, fileExt, uri, fileContents, authHeader]);
+    }
+  }
 
   const onPdfLoad = useCallback(() => {
     setLoadingFileContents(false);
@@ -181,16 +189,11 @@ const FileDisplay = ({ uri, fileName, loading, authHeader }: FileDisplayProps) =
   }
 
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={loading ?? false}>
       {(() => {
         if (fileLoadError) {
           return (
-            <Alert
-              type="error"
-              message={`Error loading file: ${fileName}`}
-              description={fileLoadError}
-              showIcon={true}
-            />
+            <Alert type="error" message={`Error loading file: ${fileName}`} description={fileLoadError} showIcon={true} />
           );
         }
 

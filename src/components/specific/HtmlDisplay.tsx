@@ -29,26 +29,29 @@ const HtmlDisplay = ({ contents, loading }: BlobDisplayProps) => {
     if (!iframe) return;
     if (!contents) return;
 
-    setIsConverting(true);
+    // hacky escape to avoid setting state directly in effect.
+    (async () => {
+      setIsConverting(true);
 
-    contents
-      .text()
-      .then((html) => {
-        // If there isn't already a <base ...> tag, instruct the embedded HTML to open links in the parent (i.e., here)
-        // instead of inside the iframe.
-        let modifiedHtml = html;
-        if (!modifiedHtml.includes("<base target") && !modifiedHtml.includes("<base href")) {
-          // noinspection HtmlRequiredTitleElement
-          modifiedHtml = modifiedHtml.replace("<head>", '<head><base target="_parent" />');
-        }
+      return contents
+        .text()
+        .then((html) => {
+          // If there isn't already a <base ...> tag, instruct the embedded HTML to open links in the parent (i.e., here)
+          // instead of inside the iframe.
+          let modifiedHtml = html;
+          if (!modifiedHtml.includes("<base target") && !modifiedHtml.includes("<base href")) {
+            // noinspection HtmlRequiredTitleElement
+            modifiedHtml = modifiedHtml.replace("<head>", '<head><base target="_parent" />');
+          }
 
-        // When we update the srcdoc attribute, it'll cause the iframe to re-load the content.
-        // When it finishes loading, it'll trigger a load event listener on the iframe, defined above in another
-        // useEffect, which turns iframeLoading back off. This process lets us render a loading indicator.
-        iframe?.setAttribute("srcdoc", modifiedHtml);
-        setIframeLoading(true);
-      })
-      .finally(() => setIsConverting(false));
+          // When we update the srcdoc attribute, it'll cause the iframe to re-load the content.
+          // When it finishes loading, it'll trigger a load event listener on the iframe, defined above in another
+          // useEffect, which turns iframeLoading back off. This process lets us render a loading indicator.
+          iframe?.setAttribute("srcdoc", modifiedHtml);
+          setIframeLoading(true);
+        })
+        .finally(() => setIsConverting(false));
+    })();
   }, [contents]);
 
   // Three different loading states:

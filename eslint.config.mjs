@@ -9,38 +9,38 @@ import tsEsLint from "typescript-eslint";
 import react from "eslint-plugin-react";
 import reactHooksEsLint from "eslint-plugin-react-hooks";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
-import prettier from "eslint-plugin-prettier";
 
 export default [
-    js.configs.recommended,
-    ...tsEsLint.configs.recommended,
-    react.configs.flat.recommended,
-    react.configs.flat["jsx-runtime"],
-    eslintPluginPrettierRecommended,
-    {
-        languageOptions: {
-            ecmaVersion: "latest",
-            sourceType: "module",
-            globals: { ...globals.browser, ...globals.es2021 },
-            parser: tsParser,
-        },
-        files: ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],
-        plugins: {
-            react,
-            "react-hooks": reactHooksEsLint,
-            prettier,
-        },
-
-        settings: {
-            react: {
-                version: "detect",
-            },
-        },
-        rules: {
-            "prettier/prettier": "error",
-            "react/prop-types": "off",
-            semi: [2, "always"],
-            ...reactHooksEsLint.configs.recommended.rules,
-        },
+  js.configs.recommended,
+  tsEsLint.configs.eslintRecommended,
+  ...tsEsLint.configs.recommended,
+  react.configs.flat.recommended,
+  react.configs.flat["jsx-runtime"],
+  eslintPluginPrettierRecommended,
+  reactHooksEsLint.configs.flat.recommended,
+  {
+    languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: "module",
+      globals: { ...globals.browser, ...globals.es2021, ...globals.node },
+      parser: tsParser,
     },
+    files: ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],
+    rules: {
+      "react/prop-types": "off", // disable prop-types since we're using TypeScript
+      "@typescript-eslint/explicit-module-boundary-types": "off", // allow implicit return types
+      "@typescript-eslint/no-empty-object-type": "off", // allow empty object type
+      "no-unused-vars": "off", // disable no-unused-vars since @typescript-eslint/no-unused-vars does the same
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }], // enable @typescript-eslint/no-unused-vars
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/consistent-type-imports": "error",
+      "react/react-in-jsx-scope": "off",
+      "react-hooks/exhaustive-deps": ["error"],
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+  },
 ];

@@ -1,0 +1,7 @@
+{
+  "test": "data",
+  "an": ["array", "of", "items"],
+  "one": {
+    "object": "with a key"
+  }
+}

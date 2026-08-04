@@ -13,7 +13,7 @@ const VideoDisplay = ({ contents, loading }: BlobDisplayProps) => {
 
   return (
     <Spin spinning={loading}>
-      <video className="bfd--w-full" ref={videoRef} controls={true} />
+      <video className="bfd--w-full bento-video-display" ref={videoRef} controls={true} />
     </Spin>
   );
 };
